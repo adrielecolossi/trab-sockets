@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F4F4ED;
+        }
+
+        /*C2B2B4  6B4E71 3A4454  53687E  F5DDDD*/
+
+        #form {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+            background: #BFDBF7;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: #A7FFF6;
+        }
+
+        #pessoasOnlineUl{
+
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+
+    <form id="form2" action="">
+        <input id="inputnick" autocomplete="off" /><button>Salvar Nick</button>
+    </form>
+
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <ul id="pessoasOnlineUl">
+    </ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var form = document.getElementById('form');
+        var formnick = document.getElementById('form2');
+        var input = document.getElementById('input');
+        var inputnick = document.getElementById('inputnick');
+
+        formnick.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (inputnick.value) {
+                socket.emit('set nick', inputnick.value);
+            }
+        });
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        const messages = document.getElementById('messages');
+        socket.on('chat message', function (msg) {
+            console.log('chegou uma msg ' + msg)
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.emit('online people');
+        const pessoasOnlineUl = document.getElementById('pessoasOnlineUl');
+        socket.on('online people', function (pessoasOnline) {
+            pessoasOnlineUl.innerHTML=''
+            for (let i = 0; i < pessoasOnline.length; i++) {
+                var item = document.createElement('li');
+                if(pessoasOnline[i].nick !== ''){
+                    item.textContent = pessoasOnline[i].nick;
+                } else{
+                item.textContent = pessoasOnline[i].id;
+                }
+                pessoasOnlineUl.appendChild(item);
+            }
+        })
+    </script>
+</body>
+
+</html>
