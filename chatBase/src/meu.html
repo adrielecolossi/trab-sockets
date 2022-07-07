@@ -66,26 +66,50 @@
             background: #A7FFF6;
         }
 
-        #pessoasOnlineUl{
+        #pessoasOnlineDiv{
+   background-color: antiquewhite;
+   width: 20%;
+   display:flex;
+   margin-left: 5%;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   
+}
+header{
+    display: flex;
+    padding: 20px;
 
-        }
+}
+#form2 {
+   margin-top: -0.5; 
+   margin-left: 2%;  
+}
     </style>
 </head>
 
 <body>
-    <ul id="messages"></ul>
+    
 
-    <form id="form2" action="">
-        <input id="inputnick" autocomplete="off" /><button>Salvar Nick</button>
-    </form>
-
+    
     <form id="form" action="">
         <input id="input" autocomplete="off" /><button>Send</button>
     </form>
-
+<header>
+    <div id="pessoasOnlineDiv">
+    <h1>Usuários online</h1>
     <ul id="pessoasOnlineUl">
+    
     </ul>
+    
+</div>
 
+<form id="form2" action="">
+    <h1>Trocar de Nick</h1>
+    <input id="inputnick" autocomplete="off" /><button>Salvar Nick</button>
+</form>
+</header>
+<ul id="messages"></ul>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
